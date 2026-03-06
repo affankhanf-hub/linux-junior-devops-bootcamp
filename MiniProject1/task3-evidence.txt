@@ -1,0 +1,29 @@
+=== Web Server: nginx ===
+● nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-03-05 21:57:51 CET; 2h 58min ago
+       Docs: man:nginx(8)
+    Process: 1229 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Process: 1239 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+   Main PID: 1252 (nginx)
+      Tasks: 2 (limit: 4599)
+     Memory: 3.2M (peak: 3.6M)
+        CPU: 59ms
+     CGroup: /system.slice/nginx.service
+             ├─1252 "nginx: master process /usr/sbin/nginx -g daemon on; master_process on;"
+             └─1253 "nginx: worker process"
+
+Mar 05 21:57:50 affan-khan-VirtualBox systemd[1]: Starting nginx.service - A high performance web server and a reverse proxy server...
+enabled
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Thu, 05 Mar 2026 23:56:14 GMT
+Content-Type: text/html
+Content-Length: 10671
+Last-Modified: Wed, 19 Nov 2025 12:17:57 GMT
+Connection: keep-alive
+ETag: "691db575-29af"
+Accept-Ranges: bytes
+
+tcp   LISTEN 0      511          0.0.0.0:80         0.0.0.0:*    ino:11230 sk:b cgroup:/system.slice/nginx.service <->                       
+tcp   LISTEN 0      511             [::]:80            [::]:*    ino:11231 sk:e cgroup:/system.slice/nginx.service v6only:1 <->              
