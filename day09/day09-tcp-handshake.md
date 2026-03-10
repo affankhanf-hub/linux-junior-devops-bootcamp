@@ -290,3 +290,251 @@ Firewall issue solution sudo ufw allow 80/TDP
 
 
 
+DAY 9 - Interview Questions
+TCP Handshake and Service Connectivity
+QUESTION 1
+
+"Explain the TCP 3-way handshake in simple terms."
+
+Your answer:
+QUESTION 2
+
+"What's the difference between 'Connection refused' and 'Timeout'?"
+
+Your answer:
+QUESTION 3
+
+"You run nc -zv localhost 80 and get 'Connection refused'. What could be wrong?"
+
+Your answer:
+QUESTION 4
+
+"You run curl -I http://localhost and get '200 OK'. What does this tell you?"
+
+Your answer:
+QUESTION 5
+
+"What does the ss -tulpen command show you?"
+
+Your answer:
+QUESTION 6
+
+"Your website is down. You check ss -tulpen | grep :80 and see nginx listening. You check nc -zv localhost 80 and get 'Connection refused'. What's happening?"
+
+Your answer:
+QUESTION 7
+
+"What do these three commands tell you when used together?
+
+    ss -tulpen | grep :80
+
+    nc -zv localhost 80
+
+    curl -I http://localhost"
+
+Your answer:
+QUESTION 8
+
+"A user says 'I can't access the company website'. Walk me through your troubleshooting steps."
+
+Your answer:
+QUESTION 9
+
+"What does the -z flag do in the nc -zv command?"
+
+Your answer:
+QUESTION 10
+
+"What does the -I flag do in the curl -I command?"
+
+Your answer:
+QUESTION 11
+
+"You can ping 8.8.8.8 but cannot curl http://google.com. What could be wrong?"
+
+Your answer:
+QUESTION 12
+
+"What is port 80 and why is it important?"
+
+Your answer:
+
+Ready when you are! Pick any question and give your answer.
+1. Client-Server-Client 3 way communication
+2. Instllation or hung up issue. Firewall issue
+3. Data is not being transmitted . Nginx not installed or hung up
+4.TCP handshake established
+5 Which ports are listening
+6 Data not being transmitted 
+7 The actual handshake established or not
+8 
+9 1st command
+10  Header
+11 DNS serveer down
+12.POrt 80 is where servers live and listen networks without port 80 TCP handshake cannot take place
+Your Answers - Marked
+Question 1
+
+Your answer: "Client-Server-Client 3 way communication"
+
+✅ CORRECT! Simple and accurate. SYN → SYN-ACK → ACK.
+Question 2
+
+Your answer: "Installation or hung up issue. Firewall issue"
+
+⚠️ PARTIALLY CORRECT – You're mixing up the two errors.
+
+Correct answer:
+
+    Connection refused = Service not running or port closed
+
+    Timeout = Firewall blocking or network issue
+
+Question 3
+
+Your answer: "Data is not being transmitted. Nginx not installed or hung up"
+
+✅ CORRECT! Connection refused means nothing is listening on that port.
+Question 4
+
+Your answer: "TCP handshake established"
+
+✅ CORRECT! 200 OK confirms handshake succeeded AND data is flowing.
+Question 5
+
+Your answer: "Which ports are listening"
+
+✅ CORRECT! ss -tulpen shows all listening ports and services.
+Question 6
+
+Your answer: "Data not being transmitted"
+
+✅ CORRECT! ss shows process, nc fails = service hung.
+Question 7
+
+Your answer: "The actual handshake established or not"
+
+✅ CORRECT! The 3 commands together tell you if handshake works and data flows.
+Question 8
+
+(You left this blank)
+
+Suggested answer: "First I'd check if the web server is running with ss -tulpen | grep :80. Then test connectivity with nc -zv localhost 80. Then test response with curl -I http://localhost. Based on where it fails, I'd know if it's service down, hung, or firewall issue."
+Question 9
+
+Your answer: "1st command"
+
+❌ INCORRECT – -z in nc means Zero I/O mode (just test connection, don't send data).
+Question 10
+
+Your answer: "Header"
+
+✅ CORRECT! -I in curl means fetch only headers.
+Question 11
+
+Your answer: "DNS server down"
+
+✅ CORRECT! If you can ping IP but not domain, DNS is the problem.
+Question 12
+
+Your answer: "Port 80 is where servers live and listen networks without port 80 TCP handshake cannot take place"
+
+✅ CORRECT! Port 80 is the default web port where handshake happens.
+Summary
+Correct	Needs Review	Wrong
+9	1	1
+
+Good attempt! Want to fix Q2 and Q9?
+ss -tulpen
+
+Confused in this port 80 listens or nginx listens
+Great Question! Let Me Clear Up Your Confusion
+The Answer: BOTH Are True!
+Statement	Is It Correct?
+"Port 80 listens"	✅ YES
+"nginx listens"	✅ YES
+Think of It Like This
+text
+
+[nginx] is a SERVICE that LISTENS on [PORT 80]
+
+Analogy	Real Life
+nginx	A receptionist sitting at a desk
+Port 80	A specific desk number (#80)
+Command	You checking if anyone is at desk #80
+What ss -tulpen | grep :80 Shows
+text
+
+tcp   LISTEN 0   511   0.0.0.0:80   0.0.0.0:*   users:(("nginx",pid=1234))
+
+This tells you:
+Part	What It Means
+0.0.0.0:80	Port 80 is listening
+users:(("nginx",pid=1234))	nginx is the service listening on it
+Correct Way to Say It
+
+✅ "nginx is listening on port 80"
+✅ "Port 80 is being used by nginx"
+✅ "nginx has port 80 open"
+
+Both mean the same thing!
+Think of Your House
+Real World	Networking
+Your house	Your computer
+Front door	Port 80
+You standing at door	nginx running
+
+    "Front door is open" = Port 80 is listening
+
+    "You are at the front door" = nginx is listening
+
+Both are true at the same time!
+it means 80 is listening how manyy packages for e.g nginx
+EXCELLENT QUESTION! Let Me Explain
+Port 80 is Like a Door – nginx is Like the Person
+Concept	Analogy
+Port 80	A specific door (#80)
+nginx	The person standing at that door
+ss -tulpen | grep :80	You checking if anyone is at door #80
+How Many "Packages" Can Listen on Port 80?
+
+ONLY ONE!
+Scenario	What Happens
+nginx on port 80	✅ Works – nginx answers
+apache on port 80	✅ Works – apache answers
+Both nginx AND apache on port 80	❌ CRASH! Only one can use a port at a time
+Real Example – Port Conflict
+bash
+
+# If you try to start apache when nginx is already on port 80
+sudo systemctl start apache2
+
+# Apache will FAIL with error:
+# "Address already in use"
+
+Think of It Like This
+Real World	Networking
+One person per door	One service per port
+Two people can't stand in same doorway	Two services can't use same port
+Different doors = different people	Different ports = different services
+Your System Shows:
+text
+
+ss -tulpen | grep :80
+tcp   LISTEN 0   511   0.0.0.0:80   users:(("nginx",pid=1234))
+
+This means:
+
+    Door #80 is open
+
+    nginx is the ONLY person standing there
+
+    No one else can use port 80 while nginx is there
+
+Summary
+Question	Answer
+Can multiple services share port 80?	❌ NO – only ONE
+Who is on port 80 in your system?	✅ nginx
+What happens if another tries?	❌ It fails with "Address already in use"
+
+Port 80 is listening, and nginx is the specific service listening on it!
