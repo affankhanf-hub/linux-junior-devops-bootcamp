@@ -174,3 +174,27 @@ text
 6. **tail -f** is the industry standard for watching logs in real-time. It shows new lines as they appear.
 
 7. **Absolute paths** work from anywhere. **Relative paths** are shorter but break if you change directories.
+
+
+## Quiz Questions and Answers
+
+**Q1. Difference between absolute and relative path?**
+
+**My Answer:** Absolute path starts from root (/). Relative path starts from my current location (pwd).
+
+**Q2. What does | (pipe) do in shell?**
+
+**My Answer:** Pipe connects different tools together. Output of first command becomes input of second command.
+
+**Q3. Command to search text in a file?**
+
+**My Answer:** `grep`
+
+**Q4. Purpose of tar?**
+
+**My Answer:** Tar bundles files together. The `-z` flag does the actual compression to save disk space.
+
+**Q5. Why use head and tail?**
+
+**My Answer:** `head` checks initial logs or file headers. `tail` checks current or recent logs. `tail -f` watches logs in real-time.
+
