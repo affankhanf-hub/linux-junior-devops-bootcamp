@@ -1,4 +1,4 @@
-## 📚 Theory Summary
+##  Theory Summary
 
 Package management is how Linux installs, updates, and removes software safely from trusted repositories.
 
@@ -14,7 +14,7 @@ Package management is how Linux installs, updates, and removes software safely f
 
 ---
 
-## 🔧 Commands Used
+## Commands Used
 
 | # | Command | Purpose |
 |---|---------|---------|
@@ -27,7 +27,7 @@ Package management is how Linux installs, updates, and removes software safely f
 
 ---
 
-## 📤 Output & Evidence
+##  Output & Evidence
 
 ### Task 1: `sudo apt update`
 
@@ -101,7 +101,7 @@ text
      Active: active (running) since Wed 2026-03-04 16:30:48 CET
 ✅ CONFIRMED: nginx is enabled and running
 
-📋 Maintenance Checklist
+Maintenance Checklist
 What was installed	Why it was installed	Service enabled?	What should be disabled or reviewed
 nginx	Web server to serve content	✅ Enabled	Keep - review security headers
 apache2	Second web server for learning	❌ Disabled	Review - consider removing (port conflict risk)
@@ -115,7 +115,8 @@ Commands to disable unnecessary services:
 
 bash
 sudo systemctl disable --now cups bluetooth avahi-daemon ModemManager
-🔒 Security Relevance
+
+Security Relevance
 Why Updates Matter
 Action	Security Impact
 sudo apt update	Ensures system knows about latest security patches
@@ -136,7 +137,7 @@ The systemctl list-unit-files | grep enabled command showed 80+ services startin
 
 Security best practice: Disable everything, then enable only what you need.
 
-🐛 Troubleshooting
+Troubleshooting
 No actual errors in main tasks
 All commands ran successfully. Only warnings were SyntaxWarning messages during fail2ban installation (escape sequences in test files - no functional impact).
 
@@ -145,7 +146,8 @@ Scenario	Observation	Hypothesis	Solution
 Update fails	Temporary failure resolving 'archive.ubuntu.com'	DNS/network issue	ping -c 4 8.8.8.8
 Package not found	E: Unable to locate package nginx	Forgot apt update	Run sudo apt update first
 Service fails to start	Active: failed (Result: exit-code)	Port conflict or config error	ss -tulpen | grep :80 and journalctl -u nginx
-📝 Lessons Learned
+
+Lessons Learned
 apt update before apt install - Package lists get stale without updating.
 
 -y flag hides prompts - Good for automation, but learn without it first.
