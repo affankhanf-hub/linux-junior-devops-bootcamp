@@ -205,7 +205,9 @@ ls	-l	Long format	Shows the full permission string like drwxr-x---
 ls	-d	Directory	Shows information about the folder itself, not what is inside
 sudo	-u	User	Runs a command as if you are another user
 usermod	-aG	Append to Group	Adds a user to a group without removing them from other groups
+
 Lessons Learned
+
 The command sudo -u username is very useful for testing. It lets me act as another user without logging out of my WSL session. I used this to test as cloudserve-app, aadil, and otheruser.
 
 The permission string drwxr-x--- confirms 750 is applied. The d means directory. The rwx means owner has read, write, execute. The r-x means group has read and execute but no write. The --- means others have nothing.
