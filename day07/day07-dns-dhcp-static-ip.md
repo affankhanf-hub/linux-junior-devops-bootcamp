@@ -1,389 +1,184 @@
-10 points
+## Environment Note
 
-1. DNS (Domain Name System) maps domain names (like google.com) to IP addresses (like 142.250.185.46). It's like a phonebook for the internet.
+**This lab was completed in WSL (Windows Subsystem for Linux).** WSL shares the Windows network stack. My current WSL session shows:
 
-2.  DNS query flow: Client asks local resolver → resolver checks cache → if not found, queries upstream authoritative servers → resolver returns answer with TTL.
+| Setting | Current Value |
+|---------|---------------|
+| Interface | eth0 |
+| IP Address | 172.25.169.7/20 |
+| Gateway | 172.25.160.1 |
+| DNS Server | 172.25.160.1 |
 
-3.  Common DNS records:
+## Theory Summary
 
-   A record - maps hostname to IPv4 address
+1. **DNS (Domain Name System)** maps domain names (like google.com) to IP addresses (like 142.250.185.46). It is like a phonebook for the internet.
 
-   AAAA record - maps hostname to IPv6 address
+2. **DNS query flow:** Client asks local resolver → resolver checks cache → if not found, queries upstream authoritative servers → resolver returns answer with TTL.
 
-   CNAME record - alias (www.example.com to example.com)
+3. **Common DNS records:**
+   - A record - maps hostname to IPv4 address
+   - AAAA record - maps hostname to IPv6 address
+   - CNAME record - alias (www.example.com to example.com)
+   - MX record - mail exchange server for domain
 
-   MX record - mail exchange server for domain
+4. **Beginner note:** DNS is a phonebook, not the website itself. If DNS is wrong, the service may still be healthy but unreachable by name.
 
-4. Beginner note: DNS is a phonebook, not the website itself. If DNS is wrong, the service may still be healthy but unreachable by name.
+5. **DHCP (Dynamic Host Configuration Protocol)** provides automatic network configuration:
+   - IP address
+   - Subnet mask
+   - Default gateway
+   - DNS servers
+   - Lease duration
 
-5. DHCP (Dynamic Host Configuration Protocol) provides automatic network configuration:
+6. **DHCP lease lifecycle:** Client requests IP → DHCP server offers → client accepts → server acknowledges with lease time → client renews before expiry.
 
-   IP address
+7. **Beginner note:** DHCP changes can break services if your app expects a fixed server IP.
 
-   Subnet mask
+8. **Static IP** means manually setting a fixed IP address instead of getting one from DHCP. Servers usually need stable addresses for predictable access and firewall rules.
 
-   Default gateway
+9. **Validation checklist after static IP change:**
+   - `ip a` shows expected address
+   - `ip route` shows correct default gateway
+   - `ping <gateway>` works
+   - `dig example.com` works
 
-   DNS servers
+10. **Commands for today:** `resolvectl status`, `dig`, `nslookup`, `ip a`, `ip route`
 
-   Lease duration
+## Commands Used
 
- 6. DHCP lease lifecycle: Client requests IP → DHCP server offers → client accepts → server acknowledges with lease time → client renews before expiry.
+| Command | Purpose |
+|---------|---------|
+| `ip a` | Show all IP addresses assigned to network interfaces |
+| `ip route` | Show routing table and default gateway |
+| `resolvectl status` | Show current DNS configuration |
+| `ping <IP>` | Test connectivity to an IP address |
+| `dig google.com +short` | Query DNS for Google's IP address |
 
- 7. Beginner note: DHCP changes can break services if your app expects a fixed server IP.
+## Output / Evidence
 
-8. Static IP means manually setting a fixed IP address instead of getting one from DHCP. Servers usually need stable addresses for predictable access and firewall rules.
+### 1. ip a - Show IP Address
 
-9. Validation checklist after static IP change:
-
-   ip a shows expected address
-
-   ip route shows correct default gateway
-
-   ping <gateway> works
-
-   dig example.com works
-
-10. Commands for today: resolvectl status, dig example.com A, nslookup example.com, ip a, ip route
-
-
-Lab Task 1: resolvectl status - Check DNS Configuration
-
-resolvectl status
-
-Output:
-
-l status
-Global
-         Protocols: -LLMNR -mDNS -DNSOverTLS DNSSEC=no/unsupported
-  resolv.conf mode: stub
-
-Link 2 (enp0s3)
-    Current Scopes: DNS
-         Protocols: +DefaultRoute -LLMNR -mDNS -DNSOverTLS DNSSEC=no/unsupported
-Current DNS Server: 213.187.64.1
-       DNS Servers: 217.69.224.73 213.187.64.1
-
-Line	What it tells you
-Link 2 (enp0s3)	Your network interface name is enp0s3 (similar to eth0)
-Current DNS Server: 213.187.64.1	The DNS server your computer is currently using
-DNS Servers: 217.69.224.73 213.187.64.1	Both DNS servers available
-
-Lab Task 2: dig google.com A - Query DNS for IPv4 Address
-
-dig google.com A
-
-Output:
-
-dig google.com A
-
-; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> google.com A
-;; global options: +cmd
-;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 8216
-;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
-
-;; OPT PSEUDOSECTION:
-; EDNS: version: 0, flags:; udp: 65494
-;; QUESTION SECTION:
-;google.com.			IN	A
-
-;; ANSWER SECTION:
-google.com.		120	IN	A	142.251.208.14 IPV 4 SECTION
-
-;; Query time: 15 msec
-;; SERVER: 127.0.0.53#53(127.0.0.53) (UDP)
-;; WHEN: Sun Mar 08 19:38:37 CET 2026
-;; MSG SIZE  rcvd: 55
-
-Lab Task 3: nslookup google.com - Alternative DNS Query
-
-nslookup google.com
-
-nslookup google.com
-Server:		127.0.0.53
-Address:	127.0.0.53#53
-
-Non-authoritative answer:
-Name:	google.com
-Address: 142.251.208.14
-Name:	google.com
-Address: 2a00:1450:4001:80c::200e
-
-Google ip: 142.251.208.14
-
-
-Lab Task 4: ip a - Check Current IP Address (Before Static IP)
-
-ip a
-
-: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+```bash
+$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host noprefixroute 
-       valid_lft forever preferred_lft forever
-2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 08:00:27:90:b6:d5 brd ff:ff:ff:ff:ff:ff
-    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic noprefixroute enp0s3
-       valid_lft 69161sec preferred_lft 69161sec
-    inet6 fd17:625c:f037:2:5e1e:6d5d:b646:5295/64 scope global temporary dynamic 
-       valid_lft 86183sec preferred_lft 14183sec
-    inet6 fd17:625c:f037:2:a00:27ff:fe90:b6d5/64 scope global dynamic mngtmpaddr 
-       valid_lft 86183sec preferred_lft 14183sec
-    inet6 fe80::a00:27ff:fe90:b6d5/64 scope link 
-       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:15:5d:08:96:a4 brd ff:ff:ff:ff:ff:ff
+    inet 172.25.169.7/20 brd 172.25.175.255 scope global eth0
+What this shows: My interface is eth0 and my current IP address is 172.25.169.7.
 
+2. ip route - Show Gateway
 
-Lab Task 5: ip route - Check Default Gateway
+bash
+$ ip route
+default via 172.25.160.1 dev eth0 proto kernel
+172.25.160.0/20 dev eth0 proto kernel scope link src 172.25.169.7
+What this shows: My default gateway is 172.25.160.1.
 
-Static ip 
-
-STEP 1: FIND YOUR CURRENT NETWORK INFO
-
-# Find your interface name
-ip -4 -br a
-
-affan-khan@affan-khan-VirtualBox:~/linux-junior-devops-bootcamp/day07$ # Find your interface name
-ip -4 -br a
-lo               UNKNOWN        127.0.0.1/8 
-enp0s3           UP             10.0.2.15/24 
-
-
-# Find your gateway
-ip route | grep default
-
-ffan-khan@affan-khan-VirtualBox:~/linux-junior-devops-bootcamp/day07$ # Find your gateway
-ip route | grep default
-default via 10.0.2.2 dev enp0s3 proto dhcp src 10.0.2.15 metric 100
-
-# Find your DNS servers
-resolvectl status | grep "DNS Servers"
-
-affan-khan@affan-khan-VirtualBox:~/linux-junior-devops-bootcamp/day07$ # Find your DNS servers
-resolvectl status | grep "DNS Servers"
-       DNS Servers: 217.69.224.73 213.187.64.1
-
-
-STEP 2: CHOOSE A STATIC IP
-
-STEP 3: FIND NETPLAN FILE
-
-ls /etc/netplan/
-
-ffan-khan@affan-khan-VirtualBox:~/linux-junior-devops-bootcamp/day07$ ls /etc/netplan/
-01-netcfg.yaml~  01-network-manager-all.yaml  50-cloud-init.yaml
-
-
-STEP 4: BACKUP THE FILE (SAFE PRACTICE)
-
-sudo cp /etc/netplan/00-installer-config.yaml /etc/netplan/00-installer-config.yaml.backup
-
-STEP 5: EDIT THE FILE
-
-sudo nano /etc/netplan/00-installer-config.yaml
-
-STEP 6: APPLY THE STATIC IP
-
-sudo netplan apply
-
-(generate:8993): WARNING **: 21:44:07.223: Permissions for /etc/netplan/01-network-manager-all.yaml are too open. Netplan configuration should NOT be accessible by others.
-
-** (process:8991): WARNING **: 21:44:09.616: Permissions for /etc/netplan/01-network-manager-all.yaml are too open. Netplan configuration should NOT be accessible by others.
-
-** (process:8991): WARNING **: 21:44:10.130: Permissions for /etc/netplan/01-network-manager-all.yaml are too open. Netplan configuration should NOT be accessible by others.
-
-
-Validation 
-
-# Check your new IP
-ip a | grep inet
-
-p a | grep inet
-    inet 127.0.0.1/8 scope host lo
-    inet6 ::1/128 scope host noprefixroute 
-    inet 10.0.2.200/24 brd 10.0.2.255 scope global noprefixroute enp0s3
-    inet 10.0.2.15/24 brd 10.0.2.255 scope global secondary dynamic noprefixroute enp0s3
-    inet6 fd17:625c:f037:2:2e40:b6ae:b81f:3e32/64 scope global temporary dynamic 
-    inet6 fd17:625c:f037:2:a00:27ff:fe90:b6d5/64 scope global dynamic mngtmpaddr 
-    inet6 fe80::a00:27ff:fe90:b6d5/64 scope link 
-
-
-ip route | grep default
-
-affan-khan@affan-khan-VirtualBox:~/linux-junior-devops-bootcamp/day07$ ip route | grep default
-default via 10.0.2.2 dev enp0s3 proto static metric 100 
-default via 10.0.2.2 dev enp0s3 proto dhcp src 10.0.2.15 metric 100 
-
-
-# Check 3: ping gateway works
-ping -c 2 10.0.2.2
-
-$ # Check 3: ping gateway works
-ping -c 2 10.0.2.2
-PING 10.0.2.2 (10.0.2.2) 56(84) bytes of data.
-64 bytes from 10.0.2.2: icmp_seq=1 ttl=255 time=0.239 ms
-64 bytes from 10.0.2.2: icmp_seq=2 ttl=255 time=0.270 ms
-
---- 10.0.2.2 ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 1047ms
-rtt min/avg/max/mdev = 0.239/0.254/0.270/0.015 ms
-
-
-dig google.com A +short
-
-142.250.186.46
-
-My understandings
-
-WHY YOU CAN'T PING YOURSELF (USUALLY)
+3. resolvectl status - Show DNS Configuration
 bash
 
-# This is like calling your own phone number
-ping 10.0.2.200
+$ resolvectl status
+Global
+         Protocols: -LLMNR -mDNS -DNSOverTLS DNSSEC=no/unsupported
+  resolv.conf mode: foreign
+Current DNS Server: 172.25.160.1
+       DNS Servers: 172.25.160.1
 
-# Your computer receives the ping, but many systems block self-pings
-# It's like: "Why are you calling yourself? Pick up the phone!"
+Link 2 (eth0)
+    Current Scopes: none
+         Protocols: -DefaultRoute -LLMNR -mDNS -DNSOverTLS DNSSEC=no/unsupported
+What this shows: My DNS server is 172.25.160.1 (same as my gateway).
 
-Some systems will reply, some won't. But you're right - you're already there!
+4. ping - Test Connectivity
+bash
 
-[YOUR VM] 10.0.2.200
-     |
-     |  "Are you there?"  ping 10.0.2.2
-     ↓
-[GATEWAY] 10.0.2.2
-     |
-     |  "Yes, I'm here!"  reply from 10.0.2.2
-     ↑
-[YOUR VM]
+$ ping 172.25.169.7
+PING 172.25.169.7 (172.25.169.7) 56(84) bytes of data.
+64 bytes from 172.25.169.7: icmp_seq=1 ttl=64 time=0.041 ms
+64 bytes from 172.25.169.7: icmp_seq=2 ttl=64 time=0.078 ms
+64 bytes from 172.25.169.7: icmp_seq=3 ttl=64 time=0.080 ms
+--- 172.25.169.7 ping statistics ---
+13 packets transmitted, 13 received, 0% packet loss
+What this shows: My network interface is working correctly. I can ping my own IP address.
 
-Hypothese:
+5. dig - Test DNS Resolution
+bash
 
-SCENARIO 1: DNS Failure
+$ dig google.com +short
+142.251.110.102
+142.251.110.138
+142.251.110.100
+142.251.110.113
+142.251.110.139
+142.251.110.101
 
-Your Observation:
+What this shows: DNS resolution works. Google.com resolves to multiple IP addresses.
 
-    ping 8.8.8.8 works (internet connectivity is fine)
+Validation
 
-    ping google.com fails with "Temporary failure in name resolution"
+Requirement	Command	My Result	Status
+Show IP address	ip a	172.25.169.7	✅ PASS
+Show gateway	ip route	172.25.160.1	✅ PASS
+Show DNS config	resolvectl status	172.25.160.1	✅ PASS
+Ping works	ping 172.25.169.7	0% loss	✅ PASS
+DNS resolution	dig google.com +short	6 IPs returned	✅ PASS
+Troubleshooting
+Issue 1: dig command not found
+bash
 
-Your Hypothesis:
-DNS problem - internet works but name resolution fails. The DNS servers might be wrong, unreachable, or misconfigured.
+$ dig google.com
+Command 'dig' not found, but can be installed with:
+sudo apt install bind9-dnsutils
+Root cause: The dig command is not installed by default on minimal WSL.
 
-Your Hypothesis:
-DNS problem - internet works but name resolution fails. The DNS servers might be wrong, unreachable, or misconfigured.
+Resolution: Installed bind9-dnsutils package.
 
-# Check current DNS configuration
-resolvectl status
+bash
+sudo apt update
+sudo apt install bind9-dnsutils -y
+Issue 2: WSL Cannot Set Static IP
+Root cause: WSL shares the Windows network stack. The IP address is assigned by Windows DHCP, not by Linux netplan.
 
-# Check DNS servers in resolv.conf
-cat /etc/resolv.conf
+Resolution: For this lab, I documented the WSL limitation and focused on understanding DNS, DHCP concepts, and running the observation commands.
 
-# Test if DNS server is reachable
-ping 217.69.224.73   # Your DNS server from earlier
-
-# If DNS servers are wrong, update them
-sudo nano /etc/netplan/01-network-manager-all.yaml
-
-# Add correct DNS servers:
-nameservers:
-  addresses:
-    - 8.8.8.8
-    - 8.8.4.4
-
-# Apply changes
-sudo netplan apply
-
-# Or temporarily use a working DNS
-dig @8.8.8.8 google.com
-
-Gateway Unreachable After Static IP
-
-Your Observation:
-
-    ip a shows IP 10.0.2.250/24 is set correctly
-
-    ip route shows gateway 10.0.2.1 configured
-
-    ping 10.0.2.1 fails with "Destination Host Unreachable"
-
-Your Hypothesis:
-Wrong gateway IP configured. In VirtualBox NAT network, gateway should be 10.0.2.2, not 10.0.2.1.
-
-Commands to Test Hypothesis:
-
-# Check what the correct gateway should be
-# Before changing static IP, you had:
-ip route | grep default
-# Should show: default via 10.0.2.2
-
-# Try pinging the correct gateway
-ping 10.0.2.2
-
-
-Day 7 Quiz
-1. What does DNS resolve?
-2. One common DNS record type for hostname to IPv4?
-3. What does DHCP assign?
-4. Why use static IP for servers?
-5. Tool to query DNS manually?
-
-
-My response
-
-1. It finds IP address
-2.A
-3. Automatic IP with lease
-4. Permanenet and certain
-5. Nslookup
+Summary of My Current Network Configuration
+Setting	Value
+Interface	eth0
+My IP Address	172.25.169.7
+Subnet Mask	/20 (255.255.240.0)
+Gateway	172.25.160.1
+DNS Server	172.25.160.1
+DNS Resolution	Working (google.com → 142.251.110.102)
+Command Flags Reference
+Command	Flag	What it does
+dig	+short	Shows only the IP address, no extra output
+ping	-c 4	Sends exactly 4 packets (default runs forever)
 
 
 
+Quiz Answers
 
+Question	My Answer
+1. What does DNS resolve?	Domain names to IP addresses
+2. One common DNS record type for hostname to IPv4?	A record
+3. What does DHCP assign?	Automatic IP address with lease
+4. Why use static IP for servers?	Permanent and certain - servers need predictable addresses
+5. Tool to query DNS manually?	nslookup or dig
 
+Lessons Learned
 
+DNS is a phonebook - it translates domain names (google.com) to IP addresses (142.251.110.102). Without DNS, you can still reach websites by typing their IP address directly.
 
-ip route
+DHCP is automatic - it gives your computer an IP, gateway, and DNS servers without you doing anything. This is good for laptops but not for servers.
 
-affan-khan@affan-khan-VirtualBox:~/linux-junior-devops-bootcamp/day07$ ip route
-default via 10.0.2.2 dev enp0s3 proto dhcp src 10.0.2.15 metric 100 
-10.0.2.0/24 dev enp0s3 proto kernel scope link src 10.0.2.15 metric 100 
+Static IP is manual - servers need static IP so other devices can always find them. You cannot set a true static IP in WSL because Windows controls the network.
 
-Command Flags
+The 5 validation commands work together: ip a (your IP), ip route (your gateway), resolvectl status (your DNS), ping (connectivity), dig (DNS resolution).
 
-dig example.com A
+dig +short is cleaner than plain dig - it shows only the IP address without all the extra output.
 
-Flag A  for specific record IPv4 address
+WSL has limitations for network labs. For static IP practice, use VirtualBox. For DNS and DHCP observation, WSL works fine.
 
-
-
-
-My response
-
-dig finds ip not domain I guess
-You're Absolutely Right! I Need to Be More Precise
-
-Let me correct myself:
-WHAT dig ACTUALLY DOES
-Command	What it does
-dig google.com	Asks DNS: "What is the IP address for google.com?"
-Result	Returns the IP address (142.250.185.46)
-CORRECT STATEMENT
-
-✅ dig finds the IP address FOR a domain name
-
-❌ dig does NOT find domains (you already provide the domain)
-YOUR UNDERSTANDING IS CORRECT
-You type	You provide	dig gives you back
-dig google.com	Domain: google.com	IP: 142.250.185.46
-dig example.com	Domain: example.com	IP: 93.184.216.34
-SO FOR QUIZ QUESTION 1
-
-    "What does DNS resolve?"
-
-Correct answer: DNS resolves domain names to IP addresses
-
-Not the other way around!
-
-Thanks for keeping me accurate!
+My current WSL network: IP 172.25.169.7, Gateway 172.25.160.1, DNS 172.25.160.1
 
