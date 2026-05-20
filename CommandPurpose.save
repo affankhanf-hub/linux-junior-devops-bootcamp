@@ -1,0 +1,4 @@
+uname -a Display kernel name, hostname, kernel release, and architecture cat /etc/os-release Show distribution ID, version, and name pwd Print working directory 
+(absolute path) ls -lah List files with human-readable sizes, hidden files, and permissions sudo apt update Refresh package index from repositories
+sudo apt upgrade -y	Upgrade all installed packages (non-interactive)
+which <tool>	Show path of executable (confirms installation)

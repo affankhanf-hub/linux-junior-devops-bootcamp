@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 # Day 2: CLI and Filesystem
+=======
+ day02-cli-files-lab.md# Day 2: CLI and Filesystem
+>>>>>>> 56d9e67 (Save current changes before pull)
 
 ## Theory Summary
 
 1. **The Root (/):** In Linux, everything is a file and starts from the single root directory. There are no "C:" or "D:" drives like in Windows.
 
 2. **Configuration (/etc):** This is the "Settings" folder for the OS. If you need to change how a service behaves (like SSH or a Web Server), you find the config file here.
+<<<<<<< HEAD
 
 3. **Variable Data (/var/log):** This is the most critical folder for troubleshooting. It stores the "black box" recording of everything the system does.
 
@@ -69,13 +74,82 @@ text
 
 Output:
 /home/affan-khan/course/day02/notes/lab_notes.txt
+=======
+
+3. **Variable Data (/var/log):** This is the most critical folder for troubleshooting. It stores the "black box" recording of everything the system does.
+
+4. **Absolute Paths:** These are "Full Addresses" starting from / (e.g., /home/user/file.txt). They work regardless of where you are in the terminal.
+
+5. **Relative Paths:** These are "Directions" based on your current location (e.g., ../scripts/test.sh). They are faster but depend on your pwd.
+
+6. **Redirection (>):** This "writes" output to a file. It is dangerous because it wipes the file clean (overwrites) before putting the new data in.
+
+7. **Append (>>):** This "adds" output to the bottom of a file. It is the safe way to keep a running log of your command results.
+
+8. **Piping (|):** The "Chain." It connects the output of one tool to the input of another, allowing you to filter huge amounts of data (like cat into grep).
+
+9. **Service Ports:** Networking services live on specific "Ports." SSH uses Port 22 for secure remote access, and HTTP uses Port 80 for web traffic.
+
+10. **Memory Strategy:** Engineers don't memorize flags; they memorize "Patterns." Use man <command> to read the manual or <command> --help for a quick flag reminder.
+
+## Commands Used
+
+| Command | Purpose |
+|---------|---------|
+| `mkdir -p ~/course/day02/{notes,logs,scripts}` | Create parent directories and subdirectories in one command |
+| `ls -la ~/course/day02/` | List directory contents with permissions and hidden files |
+| `cd ~/linux-junior-devops-bootcamp/days/day02` | Change to day02 directory |
+| `ls` | List files in current directory |
+| `find ~/course -type f` | Find all regular files in course directory |
+| `grep -i "error" /var/log/syslog` | Search syslog for errors (case-insensitive) |
+| `tail -n 20` | Show last 20 lines of output |
+| `tar -czf backup.tar.gz ~/course/day02` | Create compressed archive of day02 directory |
+| `tar -tvf backup.tar.gz` | List contents of archive without extracting |
+
+## Output / Evidence
+
+**mkdir -p ~/course/day02/{notes,logs,scripts}**
+
+Output: (no output on success)
+
+**ls -la ~/course/day02/**
+
+Output:
+total 12
+drwxrwxr-x 5 affan-khan affan-khan 4096 Feb 22 02:02 .
+drwxrwxr-x 3 affan-khan affan-khan 4096 Feb 22 02:02 ..
+drwxrwxr-x 2 affan-khan affan-khan 4096 Feb 22 02:02 logs
+drwxrwxr-x 2 affan-khan affan-khan 4096 Feb 22 02:02 notes
+drwxrwxr-x 2 affan-khan affan-khan 4096 Feb 22 02:02 scripts
+>>>>>>> 56d9e67 (Save current changes before pull)
 
 text
 
+<<<<<<< HEAD
 **grep -i "error" /var/log/syslog | tail -n 20**
 
 Output:
 2026-02-22T00:29:01.255390+01:00 affan-khan-VirtualBox org.gnome.Nautilus[13792]: MESA: error: ZINK: failed to choose pdev
+=======
+**cd ~/linux-junior-devops-bootcamp/days/day02**
+
+Output: (no output)
+
+**ls**
+
+Output:day02-cli-files-lab.md
+
+
+
+**find ~/course -type f**
+
+Output:/home/affan-khan/course/day02/notes/lab_notes.txt
+
+
+**grep -i "error" /var/log/syslog | tail -n 20**
+
+Output:2026-02-22T00:29:01.255390+01:00 affan-khan-VirtualBox org.gnome.Nautilus[13792]: MESA: error: ZINK: failed to choose pdev
+>>>>>>> 56d9e67 (Save current changes before pull)
 2026-02-22T00:34:25.991427+01:00 affan-khan-VirtualBox tracker-miner-fs-3[14184]: (tracker-extract-3:14184): GLib-GIO-WARNING **: 00:34:25.988: Error creating IO channel for /proc/self/mountinfo: Invalid argument (g-io-error-quark, 13)
 2026-02-22T00:34:36.572228+01:00 affan-khan-VirtualBox org.gnome.Nautilus[14214]: MESA: error: ZINK: failed to choose pdev
 2026-02-22T00:39:21.909429+01:00 affan-khan-VirtualBox tracker-miner-fs-3[14518]: (tracker-extract-3:14518): GLib-GIO-WARNING **: 00:39:21.906: Error creating IO channel for /proc/self/mountinfo: Invalid argument (g-io-error-quark, 13)
@@ -176,6 +250,7 @@ text
 7. **Absolute paths** work from anywhere. **Relative paths** are shorter but break if you change directories.
 
 
+<<<<<<< HEAD
 ## Quiz Questions and Answers
 
 **Q1. Difference between absolute and relative path?**
@@ -198,3 +273,6 @@ text
 
 **My Answer:** `head` checks initial logs or file headers. `tail` checks current or recent logs. `tail -f` watches logs in real-time.
 
+=======
+
+>>>>>>> 56d9e67 (Save current changes before pull)
